@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Environment
+venv/
+
+# PyCharm
+.idea/
+
+# Database
+finance.db
+
+# Streamlit
+.streamlit/
+
+# OS
+.DS_Store
