@@ -1,3 +1,4 @@
+from components.expenses.table import expense_table
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -64,17 +65,17 @@ if expenses:
     df = pd.DataFrame(
         expenses,
         columns=[
-            "ID",
-            "Fecha",
-            "Categoría",
-            "Monto",
-            "Descripción"
+            "id",
+            "date",
+            "category",
+            "amount",
+            "description"
         ]
     )
 
-    total_expenses = df["Monto"].sum()
-    number_of_expenses = df["Monto"].count()
-    average_expenses = df["Monto"].mean()
+    total_expenses = df["amount"].sum()
+    number_of_expenses = df["amount"].count()
+    average_expenses = df["amount"].mean()
 
     # ---------- GRAFICO ----------
 
@@ -85,15 +86,15 @@ if expenses:
     )
 
     expenses_by_category = (
-        df.groupby("Categoría")["Monto"]
+        df.groupby("category")["amount"]
         .sum()
         .reset_index()
     )
 
     fig = px.pie(
         expenses_by_category,
-        names="Categoría",
-        values="Monto"
+        names="category",
+        values="amount"
     )
 
     st.plotly_chart(
@@ -129,27 +130,18 @@ if expenses:
             f"$ {average_expenses:.2f}"
         )
 
+    expense_table(df)
+
     # ---------- TABLA ----------
 
-
-    # df = df.drop(
-    #     columns=["ID"]
-    # )
-
-
-
-    st.dataframe(
-        df,
-        use_container_width=True
-    )
-
     st.divider()
+
 
     st.subheader("🗑️ Eliminar gasto")
 
     expense_options = {
-        f"{row['Fecha']} | {row['Categoría']} | ${row['Monto']:.2f}":
-            row["ID"]
+        f"{row['date']} | {row['category']} | ${row['amount']:.2f}":
+            row["id"]
         for _, row in df.iterrows()
     }
 
