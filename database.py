@@ -27,9 +27,24 @@ def create_tables():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS settings (
+            id INTEGER PRIMARY KEY,
+            monthly_budget REAL NOT NULL
+        )
+    """)
+
+    cursor.execute("""
+        INSERT OR IGNORE INTO settings (
+            id,
+            monthly_budget
+        )
+        VALUES (1, 300.00)
+    """)
+
+
     connection.commit()
     connection.close()
-
 
 
 def insert_expense(date, category, amount, description):
@@ -101,3 +116,76 @@ def get_incomes():
 
     return incomes
 
+
+
+def get_budget():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT monthly_budget
+        FROM settings
+        WHERE id = 1
+    """)
+
+    result = cursor.fetchone()
+
+    conn.close()
+
+    return result[0]
+
+def update_budget(new_budget):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE settings
+        SET monthly_budget = ?
+        WHERE id = 1
+    """, (new_budget,))
+
+    conn.commit()
+    conn.close()
+
+
+#UPDATE EXPENSES
+def update_expense(expense_id, date, category, amount, description):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE expenses
+        SET
+            date = ?,
+            category = ?,
+            amount = ?,
+            description = ?
+        WHERE id = ?
+    """, (
+        date,
+        category,
+        amount,
+        description,
+        expense_id
+    ))
+
+    conn.commit()
+    conn.close()
+
+#DELETE EXPENSES
+
+def delete_expense(expense_id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        DELETE FROM expenses
+        WHERE id = ?
+    """, (expense_id,))
+
+    conn.commit()
+    conn.close()
