@@ -130,7 +130,7 @@ if expenses:
             f"$ {average_expenses:.2f}"
         )
 
-    expense_table(df)
+    edited_df = expense_table(df)
 
     # ---------- TABLA ----------
 
