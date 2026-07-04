@@ -1,24 +1,34 @@
-#from database import *
-
 import streamlit as st
 import pandas as pd
+
+
+CATEGORIES = [
+    "Comida",
+    "Transporte",
+    "Agua",
+    "Luz",
+    "Educación",
+    "Entretenimiento",
+    "Tarjeta de Credito",
+    "Otros"
+]
 
 
 def expense_table(df: pd.DataFrame):
 
     table_df = df.copy()
 
-    # Columna para seleccionar registros a eliminar
+    # Columna para marcar registros a eliminar
     table_df["delete"] = False
 
     edited_df = st.data_editor(
         table_df,
         use_container_width=True,
         hide_index=True,
+        disabled=["id"],
         column_config={
             "id": st.column_config.NumberColumn(
                 "ID",
-                disabled=True,
                 width="small"
             ),
 
@@ -28,16 +38,7 @@ def expense_table(df: pd.DataFrame):
 
             "category": st.column_config.SelectboxColumn(
                 "Categoría",
-                options=[
-                    "Comida",
-                    "Transporte",
-                    "Agua",
-                    "Luz",
-                    "Educación",
-                    "Entretenimiento",
-                    "Tarjeta de Credito",
-                    "Otros"
-                ]
+                options=CATEGORIES
             ),
 
             "amount": st.column_config.NumberColumn(
@@ -50,12 +51,10 @@ def expense_table(df: pd.DataFrame):
             ),
 
             "delete": st.column_config.CheckboxColumn(
-                "🗑️"
-            )
-        },
-
-        disabled=["id"]
+                "🗑️ Eliminar",
+                default=False
+            ),
+        }
     )
 
-    st.write(table_df.columns)
     return edited_df

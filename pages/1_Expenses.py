@@ -9,7 +9,7 @@ create_tables()
 
 st.title("💸 Gastos")
 
-# ---------- FORM----------
+# ---------- FORMULARIO ----------
 
 with st.form("expense_form"):
 
@@ -56,6 +56,9 @@ with st.form("expense_form"):
             "Gasto guardado correctamente"
         )
 
+        st.rerun()
+
+
 # ---------- HISTORIAL ----------
 
 expenses = get_expenses()
@@ -72,18 +75,19 @@ if expenses:
             "description"
         ]
     )
+    df["date"] = pd.to_datetime(df["date"])
+
+    # ---------- MÉTRICAS ----------
 
     total_expenses = df["amount"].sum()
     number_of_expenses = df["amount"].count()
     average_expenses = df["amount"].mean()
 
-    # ---------- GRAFICO ----------
+    # ---------- GRÁFICO ----------
 
     st.divider()
 
-    st.subheader(
-        "📊 Gastos por categoría"
-    )
+    st.subheader("📊 Gastos por categoría")
 
     expenses_by_category = (
         df.groupby("category")["amount"]
@@ -102,13 +106,11 @@ if expenses:
         use_container_width=True
     )
 
-    # ---------- METRICAS ----------
+    # ---------- MÉTRICAS ----------
 
     st.divider()
-    st.subheader(
-        "📋 Historial de Gastos"
-    )
 
+    st.subheader("📋 Historial de Gastos")
 
     col1, col2, col3 = st.columns(3)
 
@@ -130,34 +132,11 @@ if expenses:
             f"$ {average_expenses:.2f}"
         )
 
-    edited_df = expense_table(df)
-
     # ---------- TABLA ----------
 
-    st.divider()
+    edited_df = expense_table(df)
 
 
-    st.subheader("🗑️ Eliminar gasto")
+else:
 
-    expense_options = {
-        f"{row['date']} | {row['category']} | ${row['amount']:.2f}":
-            row["id"]
-        for _, row in df.iterrows()
-    }
-
-    selected_expense = st.selectbox(
-        "Seleccione un gasto",
-        options=list(expense_options.keys())
-    )
-
-    if st.button("Eliminar gasto"):
-
-        expense_id = expense_options[selected_expense]
-
-        delete_expense(expense_id)
-
-        st.success(
-            "Gasto eliminado correctamente"
-        )
-
-        st.rerun()
+    st.info("Todavía no existen gastos registrados.")
